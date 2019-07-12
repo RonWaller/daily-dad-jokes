@@ -2,7 +2,7 @@ let axios = require('axios');
 // let express = require('express');
 // let path = require('path');
 let Twit = require('twit');
-require('dotenv').config();
+// require('dotenv').config();
 
 // let app = express();
 
