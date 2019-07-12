@@ -1,18 +1,18 @@
 let axios = require('axios');
-let express = require('express');
-let path = require('path');
+// let express = require('express');
+// let path = require('path');
 let Twit = require('twit');
 require('dotenv').config();
 
-let app = express();
+// let app = express();
 
 // PORT environment variable
-let port = process.env.PORT || 3000;
+// let port = process.env.PORT || 3000;
 
 // Server listening to PORT
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Listening on port ${port}`);
+// });
 
 var T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
@@ -44,28 +44,23 @@ async function postTweet(joke) {
   let status = {
     status: `${joke} #dailydadjoke #dadjoke`
   };
-  const response = await T.post('statuses/update', status, tweeted);
+  const response = await T.post('statuses/update', status, err =>
+    console.log(err || 'Tweet Posted')
+  );
 
   return response;
 }
 
-function tweeted(err, data, response) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Tweet Posted');
-  }
-}
+getDadJoke()
+  .then(joke => {
+    console.log(joke);
+    return postTweet(joke);
+  })
+  .then(res => console.log(res))
+  .catch(err => console(err));
+// setInterval(() => {
+//   let hour = new Date().getHours();
+//   if (hour = 12) {
 
-setInterval(() => {
-  let hour = new Date().getHours();
-  if ((hour = 12)) {
-    getDadJoke()
-      .then(joke => {
-        console.log(joke);
-        return postTweet(joke);
-      })
-      .then(res => console.log(res))
-      .catch(err => console(err));
-  }
-}, 1000 * 60 * 60 * 24);
+//   }
+// }, 1000 * 60 * 60 * 24);
