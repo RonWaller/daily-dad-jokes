@@ -1,6 +1,7 @@
 let axios = require('axios');
 let express = require('express');
 let path = require('path');
+let Twit = require('twit');
 require('dotenv').config();
 
 let app = express();
@@ -13,8 +14,18 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
+var T = new Twit({
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token: process.env.ACCESS_TOKEN,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET
+});
+
 var config = {
-  headers: { Accept: 'application/json' }
+  headers: {
+    Accept: 'application/json',
+    'User-Agent': 'My Library (https://github.com/RonWaller/daily-dad-jokes)'
+  }
 };
 
 // Get Dad Joke ID
@@ -22,8 +33,6 @@ async function getDadJoke() {
   const response = await axios.get('https://icanhazdadjoke.com', config);
   const { data } = response;
   const joke = data.joke;
-  console.log(typeof 'joke');
-  console.log(joke.length);
   if (joke.length > 270) {
     getDadJoke();
   } else {
@@ -31,19 +40,32 @@ async function getDadJoke() {
   }
 }
 
-// async function postTweet(joke) {
-//   const response = await axios.get(
-//     `https://icanhazdadjoke.com/j/${id}.png`,
-//     config
-//   );
-//   const { data } = response;
-//   return data;
-// }
+async function postTweet(joke) {
+  let status = {
+    status: `${joke} #dailydadjoke #dadjoke`
+  };
+  const response = await T.post('statuses/update', status, tweeted);
 
-getDadJoke()
-  .then(joke => {
-    console.log(joke);
-    // return postTweet(joke);
-  })
-  // .then(res => console.log(res))
-  .catch(err => console(err));
+  return response;
+}
+
+function tweeted(err, data, response) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Tweet Posted');
+  }
+}
+
+setInterval(() => {
+  let hour = new Date().getHours();
+  if ((hour = 12)) {
+    getDadJoke()
+      .then(joke => {
+        console.log(joke);
+        return postTweet(joke);
+      })
+      .then(res => console.log(res))
+      .catch(err => console(err));
+  }
+}, 1000 * 60 * 60 * 24);
