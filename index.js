@@ -56,7 +56,10 @@ getDadJoke()
     console.log(joke);
     return postTweet(joke);
   })
-  .then(res => console.log(res))
+  .then(res => {
+    console.log(res);
+    process.exit();
+  })
   .catch(err => console(err));
 // setInterval(() => {
 //   let hour = new Date().getHours();
