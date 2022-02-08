@@ -11,11 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^0.21.4",
-=======
-    "axios": "^0.21.2",
->>>>>>> e76ea4b98e794bfd0f9444a9d20c5ee2795ac5f5
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "twit": "^2.2.11"
